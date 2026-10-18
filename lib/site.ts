@@ -22,12 +22,6 @@ export const OPERATOR = {
   phone: process.env.NEXT_PUBLIC_OPERATOR_PHONE || "（電話番号を設定してください）",
 } as const;
 
-/**
- * 買い切りライセンスの購入ページ。Gumroad / BOOTH / Lemon Squeezy などの商品 URL。
- * 未設定の間は画面に「販売準備中」と出る（存在しないリンクを踏ませない）。
- */
-export const PURCHASE_URL = process.env.NEXT_PUBLIC_PURCHASE_URL ?? "";
-
 /** 事業者情報が未設定のまま本番公開されるのを検知する */
 export const OPERATOR_CONFIGURED = !OPERATOR.name.startsWith("（");
 

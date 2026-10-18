@@ -2,9 +2,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "お問い合わせ・見積り依頼",
-  description:
-    "組織での導入相談、見積りのご依頼を承ります。請求書払い、年度予算での購入に対応します。",
+  title: "お問い合わせ",
+  description: "不具合や誤検出の報告、ご意見を受け付けています。本ツールはすべての機能を無料で提供しています。",
 };
 
 export default function ContactLayout({ children }: { children: React.ReactNode }) {

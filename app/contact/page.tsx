@@ -5,10 +5,8 @@ import { OPERATOR } from "@/lib/site.ts";
 import { Button, Note, Panel } from "@/components/ui.tsx";
 
 const KINDS = [
-  { id: "quote", label: "見積りの依頼" },
-  { id: "trial", label: "評価用キーの依頼" },
-  { id: "intro", label: "組織での導入相談" },
-  { id: "notify", label: "機能提供開始の連絡希望" },
+  { id: "bug", label: "不具合・誤検出の報告" },
+  { id: "feedback", label: "ご意見・ご要望" },
   { id: "other", label: "その他" },
 ] as const;
 
@@ -17,7 +15,6 @@ export default function Contact() {
   const [org, setOrg] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [seats, setSeats] = useState("");
   const [body, setBody] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -30,12 +27,9 @@ export default function Contact() {
       `【お名前】${name || "（未記入）"}`,
       `【メールアドレス】${email || "（未記入）"}`,
     ];
-    if (kind === "quote" || kind === "intro") {
-      lines.push(`【想定利用人数】${seats || "（未記入）"}`);
-    }
-    lines.push("", "【ご相談内容】", body || "（未記入）");
+    lines.push("", "【内容】", body || "（未記入）");
     return lines.join("\n");
-  }, [kind, kindLabel, org, name, email, seats, body]);
+  }, [kind, kindLabel, org, name, email, body]);
 
   const mailto = `mailto:${OPERATOR.email}?subject=${encodeURIComponent(
     `【PDF墨消しチェッカー】${kindLabel}`,
@@ -55,7 +49,7 @@ export default function Contact() {
     <div className="mx-auto max-w-3xl px-5 py-12">
       <h1 className="text-2xl font-bold tracking-tight text-ink">お問い合わせ</h1>
       <p className="prose-width mt-4 leading-relaxed text-muted">
-        見積りのご依頼、組織での導入相談を承ります。請求書払い、年度予算での購入にも対応します。
+        不具合や誤検出の報告、ご意見を受け付けています。本ツールはすべての機能を無料で提供しており、有料の契約や見積りは扱っていません。
       </p>
 
       <Note>
@@ -104,18 +98,9 @@ export default function Contact() {
           placeholder="example@city.example.lg.jp"
         />
 
-        {(kind === "quote" || kind === "intro") && (
-          <Field
-            label="想定利用人数"
-            value={seats}
-            onChange={setSeats}
-            placeholder="5名程度"
-          />
-        )}
-
         <div>
           <label htmlFor="body" className="text-sm font-semibold text-ink">
-            ご相談内容
+            内容
           </label>
           <textarea
             id="body"

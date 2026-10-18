@@ -4,7 +4,6 @@ import { useCallback, useRef, useState } from "react";
 import Link from "@/lib/link.tsx";
 import type { Report } from "@/lib/analyze.ts";
 import { PdfWorker, checkFileSize } from "@/lib/client.ts";
-import { useLicense } from "@/lib/use-license.ts";
 import { Badge, Button, ButtonLink, Panel, type Tone } from "@/components/ui.tsx";
 
 type Row = {
@@ -25,7 +24,6 @@ const VERDICT: Record<Report["verdict"], { label: string; tone: Tone }> = {
 };
 
 export default function BatchPage() {
-  const { license, loading } = useLicense();
   const [rows, setRows] = useState<Row[]>([]);
   const [running, setRunning] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -104,50 +102,13 @@ export default function BatchPage() {
   const done = rows.filter((r) => r.state === "done");
   const problems = done.filter((r) => r.report!.verdict !== "clean");
 
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-5xl px-5 py-12">
-        <div className="h-40 animate-pulse rounded-lg border border-line bg-surface" />
-      </div>
-    );
-  }
-
-  if (!license) {
-    return (
-      <div className="mx-auto max-w-3xl px-5 py-12">
-        <h1 className="text-2xl font-bold tracking-tight text-ink">一括診断</h1>
-        <p className="prose-width mt-4 leading-relaxed text-muted">
-          複数の PDF をまとめて診断し、どのファイルに問題があるかを一覧にします。
-          既に公開済みの文書を後から点検する場合に使います。
-        </p>
-        <Panel className="mt-8">
-          <h2 className="font-bold text-ink">ライセンスが必要です</h2>
-          <p className="prose-width mt-2 text-sm leading-relaxed text-muted">
-            1 ファイルずつの診断と墨消しは、ライセンスなしで全て無料で利用できます。
-            この画面はまとめて処理するためのもので、ライセンスで解放されます（販売準備中）。
-            自治体・大学・企業で評価したい場合は、評価用のキーをお送りします。
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <ButtonLink href="/contact" variant="primary">
-              評価用キーを依頼する
-            </ButtonLink>
-            <ButtonLink href="/license">ライセンスを登録</ButtonLink>
-            <ButtonLink href="/">1 ファイルずつ診断する</ButtonLink>
-          </div>
-        </Panel>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
-      <div className="flex flex-wrap items-baseline gap-3">
-        <h1 className="text-2xl font-bold tracking-tight text-ink">一括診断</h1>
-        <Badge tone="ok">{license.org}</Badge>
-      </div>
+      <h1 className="text-2xl font-bold tracking-tight text-ink">一括診断</h1>
       <p className="prose-width mt-4 leading-relaxed text-muted">
-        複数の PDF をまとめて診断します。ファイルは 1 件ずつ順に処理され、
-        いずれもブラウザ内で完結します。件数が多い場合は時間がかかります。
+        複数の PDF をまとめて診断し、どのファイルに問題があるかを一覧にします。
+        既に公開済みの文書を後から点検する場合に使います。
+        ファイルは 1 件ずつ順に処理され、いずれもブラウザ内で完結します。件数が多い場合は時間がかかります。
       </p>
 
       <div

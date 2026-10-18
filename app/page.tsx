@@ -101,7 +101,7 @@ export default function Page() {
                 <span className="text-md font-medium text-ink">
                   PDF をドロップ、またはクリックして選択
                 </span>
-                <span className="text-sm text-muted">アップロードは発生しません</span>
+                <span className="text-sm text-muted">無料・登録不要。アップロードは発生しません</span>
               </>
             )}
           </button>

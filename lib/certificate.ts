@@ -12,16 +12,14 @@ export const TOOL_VERSION = "0.1.0";
 
 export type FileFacts = { name: string; bytes: number; sha256: string };
 
-/** ライセンス保有時のみ報告書に印字する。稟議・決裁に回す際に必要になる */
-export type Licensee = { org: string; plan: string };
-
 export type Certificate = {
   tool: { name: string; version: string };
   processedAt: string;
   source: FileFacts;
   output: FileFacts;
   areaStats: AreaStat[];
-  licensee?: Licensee;
+  /** 任意。稟議・決裁に回す際に報告書へ印字する作成組織 */
+  organization?: string;
   verification: {
     areaReExtraction: boolean;
     orphanObjects: number;
@@ -42,9 +40,9 @@ export function buildCertificate(args: {
   areaStats: AreaStat[];
   report: Report;
   stillReadable: string[];
-  licensee?: Licensee;
+  organization?: string;
 }): Certificate {
-  const { source, output, areaStats, report, stillReadable, licensee } = args;
+  const { source, output, areaStats, report, stillReadable, organization } = args;
   const verification = {
     areaReExtraction: stillReadable.length === 0,
     orphanObjects: report.orphans.length,
@@ -61,7 +59,7 @@ export function buildCertificate(args: {
     source,
     output,
     areaStats,
-    licensee,
+    organization,
     verification,
   };
 }
@@ -152,7 +150,7 @@ export function renderCertificateHtml(c: Certificate): string {
 
 <h1>墨消し処理報告書</h1>
 <div class="sub">${esc(c.tool.name)} v${esc(c.tool.version)} ／ 作成日時 ${fmtDate(c.processedAt)}</div>
-${c.licensee ? `<table class="org"><tr><td class="k">作成組織</td><td><strong>${esc(c.licensee.org)}</strong></td></tr></table>` : ""}
+${c.organization ? `<table class="org"><tr><td class="k">作成組織</td><td><strong>${esc(c.organization)}</strong></td></tr></table>` : ""}
 
 <h2>処理対象ファイル</h2>
 <table>
@@ -193,14 +191,12 @@ ${c.licensee ? `<table class="org"><tr><td class="k">作成組織</td><td><stron
   </ul>
 </div>
 
-${c.licensee ? `
 <h2>確認・決裁</h2>
 <table class="seal">
   <tr><th>担当</th><th>係長</th><th>課長</th></tr>
   <tr><td></td><td></td><td></td></tr>
 </table>
 <p class="sealnote">本報告書は上記の処理結果を記録したものです。内容を確認のうえ押印してください。</p>
-` : ""}
 
 <footer>${esc(c.tool.name)} v${esc(c.tool.version)}　—　この報告書はブラウザの印刷機能から PDF として保存できます。</footer>
 

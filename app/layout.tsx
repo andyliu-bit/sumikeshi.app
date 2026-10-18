@@ -43,7 +43,6 @@ const NAV = [
   { href: "/batch", label: "一括診断" },
   { href: "/cases", label: "事例" },
   { href: "/guide", label: "手順" },
-  { href: "/pricing", label: "料金" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -109,11 +108,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <li>
                     <Link href="/privacy" className="text-muted hover:text-ink">
                       プライバシーポリシー
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/license" className="text-muted hover:text-ink">
-                      ライセンス
                     </Link>
                   </li>
                   <li>

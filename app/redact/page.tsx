@@ -8,7 +8,6 @@ import { PdfWorker, checkFileSize } from "@/lib/client.ts";
 import { buildCertificate, renderCertificateHtml } from "@/lib/certificate.ts";
 import type { Candidate } from "@/lib/detect.ts";
 import { Button } from "@/components/ui.tsx";
-import { useLicense } from "@/lib/use-license.ts";
 
 /** 描画倍率。表示は CSS で縮めるので、実座標はこの倍率で持つ */
 const SCALE = 1.5;
@@ -44,7 +43,7 @@ export default function RedactPage() {
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [imageCount, setImageCount] = useState(0);
   const [includeOrgs, setIncludeOrgs] = useState(false);
-  const { license } = useLicense();
+  const [organization, setOrganization] = useState("");
 
   useEffect(() => () => workerRef.current?.terminate(), []);
 
@@ -215,8 +214,7 @@ export default function RedactPage() {
       areaStats: result.areaStats,
       report: result.report,
       stillReadable: result.stillReadable,
-      // ライセンスがあるときだけ組織名と決裁欄を入れる
-      licensee: license ? { org: license.org, plan: license.plan } : undefined,
+      organization: organization.trim() || undefined,
     });
     save(
       new Blob([renderCertificateHtml(cert)], { type: "text/html;charset=utf-8" }),
@@ -480,6 +478,8 @@ export default function RedactPage() {
                 result={result}
                 onDownload={download}
                 onDownloadCertificate={downloadCertificate}
+                organization={organization}
+                onOrganizationChange={setOrganization}
               />
             )}
           </aside>
@@ -493,10 +493,14 @@ function ResultPanel({
   result,
   onDownload,
   onDownloadCertificate,
+  organization,
+  onOrganizationChange,
 }: {
   result: Result;
   onDownload: () => void;
   onDownloadCertificate: () => void;
+  organization: string;
+  onOrganizationChange: (v: string) => void;
 }) {
   const ok = result.verified;
   return (
@@ -512,8 +516,13 @@ function ResultPanel({
       <dl className="mt-3 space-y-1.5 text-sm">
         <Row label="対象領域の再抽出" ok={result.stillReadable.length === 0}
           value={result.stillReadable.length === 0 ? "文字なし" : `${result.stillReadable.length} 件残存`} />
+        {/* 範囲の外に残った黒塗りの下のテキストも検証失敗の理由になる。行が無いと、全部合格なのに失敗と出る */}
+        <Row label="黒塗りの下のテキスト" ok={result.report.hiddenText.length === 0}
+          value={result.report.hiddenText.length === 0 ? "なし" : `${result.report.hiddenText.length} 件（範囲を選んで墨消しが必要）`} />
         <Row label="孤児オブジェクト" ok={result.report.orphans.length === 0}
           value={result.report.orphans.length === 0 ? "なし" : `${result.report.orphans.length} 件`} />
+        <Row label="過去の版" ok={result.report.pastVersionText.length === 0}
+          value={result.report.pastVersionText.length === 0 ? "なし" : `${result.report.pastVersionText.length} 件`} />
         <Row label="メタデータ" ok={result.report.metadata.length === 0}
           value={result.report.metadata.length === 0 ? "除去済み" : `${result.report.metadata.length} 件`} />
       </dl>
@@ -541,6 +550,16 @@ function ResultPanel({
           >
             墨消し済み PDF をダウンロード
           </button>
+          <label className="block pt-1 text-xs text-muted">
+            作成組織（任意。報告書に印字されます）
+            <input
+              type="text"
+              value={organization}
+              onChange={(e) => onOrganizationChange(e.target.value)}
+              placeholder="例：〇〇市 総務課"
+              className="mt-1 block w-full rounded-md border border-line-strong bg-bg px-3 py-2 text-sm text-ink"
+            />
+          </label>
           <button
             onClick={onDownloadCertificate}
             className="w-full rounded-md bg-bg px-4 py-2.5 text-sm font-medium text-ink border border-line-strong hover:bg-surface"
