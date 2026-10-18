@@ -1,0 +1,39 @@
+# 依存とビルド生成物
+node_modules/
+.next/
+out/
+dist/
+
+# 署名鍵と発行記録。
+# 秘密鍵が漏れれば誰でもライセンスを偽造でき、失えば新規発行ができなくなる。
+# 発行記録には顧客の組織名が入る。絶対に追跡しない。
+.keys/
+
+# 事業者情報・購入 URL
+.env*
+
+# 実データのサンプル。公開資料を再配布しないため追跡しない。
+samples-real/
+
+# ビルド時に node_modules から複製する（predev / prebuild）
+public/mupdf/
+
+# 動作確認のために一時的に置くファイル
+public/samples/
+
+# spike とテストで生成する PDF
+*.pdf
+
+# TypeScript の増分ビルドキャッシュ
+*.tsbuildinfo
+
+# トップの「サンプル PDF で試す」用（scripts/make-sample.mjs で生成）。これだけは配信する
+!public/demo/*.pdf
+
+# 引き継ぎ。先方部署の回答や工数を記録するのでリポジトリには入れない
+HANDOFF.md
+
+# 鍵名と例だけで秘密は含まない。README から参照するので公開する
+!.env.example
+# wrangler のローカル状態
+.wrangler/

@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Color ────────────────────────────────────────────────
+     Restrained。色は状態を伝えるためだけに使う。
+     背景は純白。主コンテンツが PDF ページの描画であり、白い紙を主役にする。 */
+  --color-bg: oklch(1 0 0);
+  --color-surface: oklch(0.972 0.004 165);
+  --color-surface-2: oklch(0.932 0.006 165);
+  --color-line: oklch(0.898 0.005 165);
+  --color-line-strong: oklch(0.82 0.006 165);
+  --color-ink: oklch(0.22 0.012 160);
+  --color-muted: oklch(0.5 0.008 160);
+
+  /* 深緑 = 検証済み。ブランドの約束と状態の意味を一致させている */
+  --color-primary: oklch(0.38 0.095 162);
+  --color-primary-hover: oklch(0.32 0.095 162);
+  --color-primary-soft: oklch(0.955 0.02 162);
+
+  /* L=0.58 だと本文リンクとして 4.18:1 しか出ず AA に届かないため 0.53 まで落とす */
+  --color-accent: oklch(0.53 0.115 235);
+  --color-accent-soft: oklch(0.96 0.025 235);
+
+  --color-danger: oklch(0.5 0.19 25);
+  --color-danger-soft: oklch(0.965 0.025 25);
+  --color-warning: oklch(0.62 0.15 70);
+  --color-warning-soft: oklch(0.965 0.04 70);
+
+  /* ── Typography ───────────────────────────────────────── */
+  --font-sans: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", "Meiryo",
+    system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Courier New", monospace;
+
+  /* 固定スケール。流体にしない */
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.25rem;
+
+  /* ── Radius ───────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* ── Motion ───────────────────────────────────────────── */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.75;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* キーボード操作を全画面で成立させる。色覚に依存しない可視リング */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-primary-soft);
+  }
+
+  /* 日本語の長い語や URL・ハッシュが枠を割らないようにする */
+  code,
+  .break-anywhere {
+    overflow-wrap: anywhere;
+  }
+}
+
+@layer utilities {
+  /* 散文の行長を 65-75ch に抑える。データや表には掛けない */
+  .prose-width {
+    max-width: 68ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

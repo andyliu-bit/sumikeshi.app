@@ -1,0 +1,11 @@
+# Cloudflare Pages のヘッダ設定。out/ の直下に配置される。
+
+# mupdf はパスにバージョンを含むため、内容が変わることがない。
+# 既定（max-age=0, must-revalidate）だと 10MB の wasm に毎回再検証が走る。
+/mupdf/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# OGP 画像は文言を変えたときだけ差し替わる。長すぎると SNS 側の
+# 再取得が効かなくなるので 1 日に留める。
+/og.png
+  Cache-Control: public, max-age=86400
